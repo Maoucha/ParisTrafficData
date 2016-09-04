@@ -11,11 +11,13 @@ CREATE TABLE Sensor (
   id INT UNSIGNED AUTO_INCREMENT,
   shape_len FLOAT,
   id_arc FLOAT,
-  id_arc_tra INT,
+  id_arc_trafic INT UNSIGNED NOT NULL,
   latitude DOUBLE,
   longitude DOUBLE,
   PRIMARY KEY (id)
 );
+
+CREATE UNIQUE INDEX idx_id_arc_trafic on Sensor (id_arc_trafic);
 
 --
 -- Table Coordinates
@@ -26,7 +28,7 @@ CREATE TABLE Coordinates (
   latitude DOUBLE,
   longitude DOUBLE,
   PRIMARY KEY (id),
-  FOREIGN KEY (sensor) REFERENCES Sensor (id)
+  FOREIGN KEY (sensor) REFERENCES Sensor (id) ON DELETE NO ACTION
 );
 
 --
@@ -39,5 +41,5 @@ CREATE TABLE Extract (
   flow INT UNSIGNED,
   rate FLOAT UNSIGNED,
   PRIMARY KEY (id),
-  FOREIGN KEY (sensor) REFERENCES Sensor (id)
+  FOREIGN KEY (sensor) REFERENCES Sensor (id_arc_trafic)
 );
