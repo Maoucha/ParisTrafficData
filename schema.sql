@@ -5,9 +5,9 @@ CREATE DATABASE ParisTraffic;
 USE ParisTraffic;
 
 --
--- Table Compteur
+-- Table Sensor
 --
-CREATE TABLE Compteur (
+CREATE TABLE Sensor (
   id INT UNSIGNED AUTO_INCREMENT,
   shape_len FLOAT,
   id_arc FLOAT,
@@ -18,26 +18,26 @@ CREATE TABLE Compteur (
 );
 
 --
--- Table ArcPoints
+-- Table Coordinates
 --
-CREATE TABLE ArcPoints (
+CREATE TABLE Coordinates (
   id INT UNSIGNED AUTO_INCREMENT,
-  compteur INT UNSIGNED NOT NULL,
+  sensor INT UNSIGNED NOT NULL,
   latitude DOUBLE,
   longitude DOUBLE,
   PRIMARY KEY (id),
-  FOREIGN KEY (compteur) REFERENCES Compteur (id)
+  FOREIGN KEY (sensor) REFERENCES Sensor (id)
 );
 
 --
--- Table Comptage
+-- Table Extract
 --
-CREATE TABLE Comptage (
+CREATE TABLE Extract (
   id INT UNSIGNED AUTO_INCREMENT,
-  compteur INT UNSIGNED NOT NULL,
+  sensor INT UNSIGNED NOT NULL,
   horodate DATETIME NOT NULL,
-  debit INT UNSIGNED,
-  taux FLOAT UNSIGNED,
+  flow INT UNSIGNED,
+  rate FLOAT UNSIGNED,
   PRIMARY KEY (id),
-  FOREIGN KEY (compteur) REFERENCES Compteur (id)
+  FOREIGN KEY (sensor) REFERENCES Sensor (id)
 );
