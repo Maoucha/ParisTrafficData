@@ -45,21 +45,37 @@ function populateExtract ($filename)
 {
     if (is_file($filename)) {
         $connection = new PDO('mysql:host=localhost;dbname=ParisTraffic', 'root', null);
+        $connection->beginTransaction();
         $connection->exec("delete from Extract");
         $source = fopen($filename, 'r');
         $count = 0;
+        $range = 100;
+        $inserts = [];
+        $query = "insert into Extract values " . implode(", ", array_fill(0, $range, "(DEFAULT, ?, ?, ?, ?)"));
+        $statement = $connection->prepare($query);
 
         while (false !== $line = fgets($source, 4096)) {
             if ($count >= 1) {
                 $elements = explode(";", $line);
                 if (count($elements) >= 4) {
                     $date = DateTime::createFromFormat(DateTime::ISO8601, $elements[1]);
-                    $query = "insert into Extract values (DEFAULT, {$elements[0]}, '{$date->format(("Y-m-d H:i:s"))}', {$elements[2]}, {$elements[3]})";
-                    $connection->exec($query);
+                    $inserts[] = $elements[0];
+                    $inserts[] = $date->format(("Y-m-d H:i:s"));
+                    $inserts[] = $elements[2];
+                    $inserts[] = $elements[3];
+                    if (sizeof($inserts) == (4 * $range)) {
+                        $test = $statement->execute($inserts);
+                        if (!$test) {
+                            $connection->rollBack();
+                            throw new Exception(implode(", ", $statement->errorInfo()));
+                        }
+                        $inserts = [];
+                    }
                 }
             }
             $count++;
         }
+        $connection->commit();
     } else {
         throw new Exception("No such file $filename");
     }

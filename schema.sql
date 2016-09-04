@@ -27,8 +27,7 @@ CREATE TABLE Coordinates (
   sensor INT UNSIGNED NOT NULL,
   latitude DOUBLE,
   longitude DOUBLE,
-  PRIMARY KEY (id),
-  FOREIGN KEY (sensor) REFERENCES Sensor (id) ON DELETE NO ACTION
+  PRIMARY KEY (id)
 );
 
 --
@@ -40,6 +39,5 @@ CREATE TABLE Extract (
   horodate DATETIME NOT NULL,
   flow INT UNSIGNED,
   rate FLOAT UNSIGNED,
-  PRIMARY KEY (id),
-  FOREIGN KEY (sensor) REFERENCES Sensor (id_arc_trafic)
+  PRIMARY KEY (id)
 );
